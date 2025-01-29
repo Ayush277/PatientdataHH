@@ -1,7 +1,9 @@
+/* Basic Styling */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f0f8ff;
+    background-color: #002342; /* Changed background color */
+    color: white; /* Changed font color to white */
     margin: 0;
     padding: 0;
 }
@@ -76,7 +78,7 @@ body {
     background: #007BFF;
     top: 0;
     bottom: 0;
-    left:25%;
+    left: 25%;
     margin-left: -2.5px;
 }
 
