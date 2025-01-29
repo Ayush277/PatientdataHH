@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Visit Timeline</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-content">
+        <!-- Doctor Visit Timeline -->
+        <h1 class="title">Doctor Visit Timeline</h1>
+
+        <div class="container">
+            <button class="add-visit-btn" onclick="openForm()">Add a Visit</button>
+
+            <div id="form-popup" class="form-container" style="display: none;">
+                <h2>Add a Visit</h2>
+                <label>Hospital Name:</label>
+                <input type="text" id="hospital" required>
+
+                <label>Date of Visit:</label>
+                <input type="date" id="date" required>
+
+                <label>Description:</label>
+                <textarea id="description" required></textarea>
+
+                <button onclick="addVisit()">Save Visit</button>
+                <button onclick="closeForm()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline" id="timeline-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Profile Edit Toggle Function
+        function toggleEditProfile() {
+            const editableFields = document.querySelectorAll('.editable-field');
+            const editButton = document.getElementById('editProfileButton');
+            const doneButton = document.getElementById('doneButton');
+
+            editableFields.forEach(field => {
+                field.contentEditable = (field.contentEditable === "false") ? "true" : "false";
+            });
+
+            editButton.style.display = (editButton.style.display === "none") ? "inline-block" : "none";
+            doneButton.style.display = (doneButton.style.display === "none") ? "inline-block" : "none";
+        }
+
+        // Open the Add Visit Form
+        function openForm() {
+            document.getElementById('form-popup').style.display = 'block';
+        }
+
+        // Close the Add Visit Form
+        function closeForm() {
+            document.getElementById('form-popup').style.display = 'none';
+        }
+
+        // Add a Doctor Visit to the Timeline
+        function addVisit() {
+            const hospital = document.getElementById('hospital').value;
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+
+            if (!hospital || !date || !description) {
+                alert("Please fill in all the fields.");
+                return;
+            }
+
+            const timelineContent = document.getElementById('timeline-content');
+
+            // Create a new timeline entry
+            const visitEntry = document.createElement('div');
+            visitEntry.classList.add('timeline-entry');
+            visitEntry.innerHTML = `
+                <h3>${hospital} - ${new Date(date).toLocaleDateString()}</h3>
+                <p>${description}</p>
+            `;
+
+            // Append the entry and store it locally
+            timelineContent.appendChild(visitEntry);
+            saveVisit(hospital, date, description);
+
+            // Clear form and close popup
+            document.getElementById('hospital').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('description').value = '';
+            closeForm();
+        }
+
+        // Save visit to local storage
+        function saveVisit(hospital, date, description) {
+            const visits = JSON.parse(localStorage.getItem('doctorVisits')) || [];
+            visits.push({ hospital, date, description });
+            localStorage.setItem('doctorVisits', JSON.stringify(visits));
+        }
+
+        // Load visits from local storage
+        function loadVisits() {
+            const visits = JSON.parse(localStorage.getItem('doctorVisits')) || [];
+            const timelineContent = document.getElementById('timeline-content');
+
+            visits.forEach(visit => {
+                const visitEntry = document.createElement('div');
+                visitEntry.classList.add('timeline-entry');
+                visitEntry.innerHTML = `
+                    <h3>${visit.hospital} - ${new Date(visit.date).toLocaleDateString()}</h3>
+                    <p>${visit.description}</p>
+                `;
+                timelineContent.appendChild(visitEntry);
+            });
+        }
+
+        // Load visits on page load
+        window.onload = loadVisits;
+    </script>
+
+    <style>
+        .main-content {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .profile {
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .profile-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .editable-field {
+            padding: 2px;
+            border: 1px dashed transparent;
+        }
+
+        .editable-field[contenteditable="true"] {
+            border-color: #00f;
+        }
+
+        .edit-button, .done-button {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+
+        .form-container {
+            margin-top: 10px;
+        }
+
+        .timeline-container {
+            margin-top: 20px;
+        }
+
+        .timeline-entry {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</body>
+
+</html>
